@@ -68,6 +68,7 @@ following implementation ExceptionsBegone::Cache and enable it with:
 ==Authors
 
 {Patryk Peszko}[http://github.com/ppeszko]
+{Pascal Friederich}[http://github.com/paukul]
 
 ==Contributors
 

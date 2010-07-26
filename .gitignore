@@ -2,3 +2,5 @@
 *.gemspec
 coverage/*
 /rdoc
+doc
+.rvmrc

@@ -7,25 +7,32 @@ module ExceptionsBegone
         serialized_notification = serialize_data(notification)
         to_json(serialized_notification)
       end
-      
+
       def format_exception_data(exception, controller, request)
-        { :identifier => generate_identifier(controller, exception),
+        _file, _line, _method = (exception.backtrace[0].scan /^([^:]+):(\d+)(?::in `([^']+)')?$/)[0]
+        { :identifier => generate_identifier(controller, exception, _method),
           :payload => {
-            :parameters => request.parameters, 
+            :file => _file,
+            :line => _line,
+            :method => _method,
+            :message => "#{exception.class}: #{exception.message}",
+            :action => controller.action_name,
+            :controller => controller.controller_name,
+            :parameters => request.parameters,
             :url => request.url,
             :ip => request.ip,
             :request_environment => request.env,
-            :session => request.session, 
+            :session => request.session,
             :environment => ENV.to_hash,
-            :backtrace => exception.backtrace 
+            :backtrace => exception.backtrace
           }
         }
       end
-      
-      def generate_identifier(controller, exception)
-        "#{controller.controller_name}##{controller.action_name} (#{exception.class}) #{exception.message.inspect}"
+
+      def generate_identifier(controller, exception, method)
+        "#{controller.controller_name}#{controller.action_name}#{method}#{exception.class}"
       end
-  
+
       def serialize_data(data)
         case data
         when String
@@ -42,7 +49,7 @@ module ExceptionsBegone
           data.to_s
         end
       end
-  
+
       def to_json(attributes)
         ActiveSupport::JSON.encode(:notification => attributes)
       end

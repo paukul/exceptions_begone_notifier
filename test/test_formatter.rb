@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../test_helper', __FILE__)
 require 'action_controller'
 
 class TestFormatter < Test::Unit::TestCase
@@ -28,8 +28,12 @@ end
 class TestFormattingExceptionsData < Test::Unit::TestCase
   
   def setup
-    @exception = Exception.new("some exception")
     @controller = ActionController::Base.new
+    @controller.instance_eval do
+      def raising_action
+        raise Exception.new("some exception")
+      end
+    end
     request = stub(:parameters => "", 
                           :url => "http://www.example.com", 
                            :ip => "127.0.0.1",
@@ -37,11 +41,11 @@ class TestFormattingExceptionsData < Test::Unit::TestCase
                       :session => "")
     @controller.stubs(:request).returns(request)
   end
-  
+
   def test_generate_identifier
     assert_equal "#{@controller.controller_name}##{@controller.action_name} (#{@exception.class}) #{@exception.message.inspect}", ExceptionsBegone::Formatter.generate_identifier(@controller, @exception)
   end
-  
+
   def test_format_exception_data_should_automatically_set_identifier
     identifier = ExceptionsBegone::Formatter.format_exception_data(@exception, @controller, @controller.request)[:identifier]
     
