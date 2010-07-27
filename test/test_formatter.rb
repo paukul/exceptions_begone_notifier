@@ -26,13 +26,15 @@ class TestFormatter < Test::Unit::TestCase
 end 
 
 class TestFormattingExceptionsData < Test::Unit::TestCase
+  def raising_method
+    raise Exception.new("some exception")
+  end
   
   def setup
     @controller = ActionController::Base.new
-    @controller.instance_eval do
-      def raising_action
-        raise Exception.new("some exception")
-      end
+    begin
+      raising_method
+    rescue Exception => @exception
     end
     request = stub(:parameters => "", 
                           :url => "http://www.example.com", 
@@ -42,17 +44,13 @@ class TestFormattingExceptionsData < Test::Unit::TestCase
     @controller.stubs(:request).returns(request)
   end
 
-  def test_generate_identifier
-    assert_equal "#{@controller.controller_name}##{@controller.action_name} (#{@exception.class}) #{@exception.message.inspect}", ExceptionsBegone::Formatter.generate_identifier(@controller, @exception)
-  end
-
   def test_format_exception_data_should_automatically_set_identifier
     identifier = ExceptionsBegone::Formatter.format_exception_data(@exception, @controller, @controller.request)[:identifier]
     
     assert_match(/#{@controller.controller_name}/, identifier)
     assert_match(/#{@controller.action_name}/, identifier)
     assert_match(/#{@exception.class}/, identifier)
-    assert_match(/#{@exception.message.inspect}/, identifier)
+    assert_match(/raising_method/, identifier)
   end
   
   def test_format_exception_data_should_automatically_set_payload
