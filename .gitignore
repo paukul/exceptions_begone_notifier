@@ -1,4 +1,4 @@
-/pkg
-*.gemspec
-coverage/*
-/rdoc
+pkg/*
+*.gem
+.bundle
+.rvmrc

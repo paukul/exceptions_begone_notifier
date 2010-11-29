@@ -1,5 +1,7 @@
+require 'rubygems'
 require 'test/unit'
 require 'mocha'
+
 
 begin
   require 'redgreen' unless ENV['TM_FILENAME']

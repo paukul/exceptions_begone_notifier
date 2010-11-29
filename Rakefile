@@ -1,19 +1,6 @@
+require 'bundler'
+Bundler::GemHelper.install_tasks
 require 'rake'
-
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gemspec|
-    gemspec.name = "exceptions_begone_notifier"
-    gemspec.description = "Catch and send exceptions to exceptions_begone service"
-    gemspec.summary = "Catch and send exceptions to exceptions_begone service"
-    gemspec.homepage = "http://github.com/ppeszko/exceptions_begone_notifier"
-    gemspec.authors = ["Patryk Peszko"]
-    gemspec.add_dependency('activesupport')
-  end
-  Jeweler::GemcutterTasks.new
-rescue LoadError
-  puts "Jeweler not available. Install it with: sudo gem install jeweler"
-end
 
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |test|
@@ -35,8 +22,6 @@ rescue LoadError
     abort "RCov is not available. In order to run rcov, you must: sudo gem install spicycode-rcov"
   end
 end
-
-task :test => :check_dependencies
 
 task :default => :test
 

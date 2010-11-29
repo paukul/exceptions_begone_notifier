@@ -1,5 +1,6 @@
 require 'active_support'
 require 'active_support/json'
+require 'action_pack'
 require 'ostruct'
 
 require 'exceptions_begone/connection_configurator'
